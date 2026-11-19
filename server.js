@@ -5,6 +5,11 @@
 
 // TODO 1: Import Express, create the app, and choose the port.
 
+import express from "express";
+
+const app = express();
+const port = 3000;
+
 // ------------------------------------
 // Animal Data
 // ------------------------------------
@@ -85,15 +90,68 @@ const animals = [
 // ------------------------------------
 // Routes
 // ------------------------------------
+app.get("/api/animals/available", (req, res) => {
+  res.json(animals.filter((animal) => !animal.adopted));
+});
+
+app.get("/api/animals/adopted", (req, res) => {
+  res.json(animals.filter((animal) => animal.adopted));
+});
+
+// ------------------------------------
+// Routes
+// ------------------------------------
 
 // TODO 1: GET /api/animals sends every animal.
+app.get("/api/animals", (req, res) => {
+  res.json(animals);
+});
 
-// TODO 2: GET /api/animals/:id sends one animal, or a 404.
+// TODO 3: Get only available animals.
+app.get("/api/available-animals", (req, res) => {
+  const availableAnimals = animals.filter(
+    (animal) => !animal.adopted
+  );
 
-// TODO 3: GET /api/available-animals and GET /api/adopted-animals
+  res.json(availableAnimals);
+});
+
+// TODO 3: Get only adopted animals.
+app.get("/api/adopted-animals", (req, res) => {
+  const adoptedAnimals = animals.filter(
+    (animal) => animal.adopted
+  );
+
+  res.json(adoptedAnimals);
+});
+
+// TODO 2: Get one animal using its ID.
+app.get("/api/animals/:id", (req, res) => {
+  const animal = animals.find(
+    (a) => a.id === Number(req.params.id)
+  );
+
+  if (animal) {
+    res.json(animal);
+  } else {
+    res.status(404).json({
+      error: "Animal not found",
+    });
+  }
+});
+
+// ------------------------------------
+// Start the Server
+// ------------------------------------
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+
 
 // ------------------------------------
 // Start the Server
 // ------------------------------------
 
 // TODO 1: Start listening on the port.
+
